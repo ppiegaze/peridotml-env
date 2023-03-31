@@ -1,0 +1,29 @@
+[project]
+name = "flyte_repo"
+version = "0.0.1"
+dependencies = [
+    "awscli==1.27.23",
+    "flytekit",
+    "polars",
+    "pyspark",
+    "flytekitplugins-spark",
+    "flytekitplugins-polars",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "pre-commit",
+    "mypy",
+    "pytest",
+    "isort",
+    "flake8"
+]
+
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]  # list of folders that contain the packages (["."] by default)
