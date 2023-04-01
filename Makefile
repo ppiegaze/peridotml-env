@@ -65,6 +65,11 @@ package:
 	brew install pre-commit
 
 
+.PHONY: install-p10k
+install-p10k:
+	brew install romkatv/powerlevel10k/powerlevel10k
+	@echo "\nsource $$(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
+
 
 .PHONY: help
 help:

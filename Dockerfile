@@ -12,9 +12,9 @@ RUN micromamba install -y -n base -f /tmp/env.yaml && \
 
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 
-# WORKDIR /root
-# COPY . /root
-# RUN pip install .
+WORKDIR /root
+COPY . /root
+RUN pip install .
 
 
 ARG tag

@@ -2,7 +2,7 @@
 name = "flyte_repo"
 version = "0.0.1"
 dependencies = [
-    "awscli==1.27.23",
+    "awscli",
     "flytekit",
     "polars",
     "pyspark",

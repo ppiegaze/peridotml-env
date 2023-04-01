@@ -11,3 +11,6 @@ we change our stack a lot.
 
 
 https://github.com/romkatv/powerlevel10k#getting-started
+
+
+ssh-keygen -t ed25519 -C "esad@peridotml.io"
