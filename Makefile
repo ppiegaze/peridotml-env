@@ -46,14 +46,10 @@ install-spark: check-brew
 install-flyte:
 	brew install flyteorg/homebrew-tap/flytectl
 
+
 .PHONY: start-flyte-demo
 start-flyte: install-flyte
 	flytectl demo start
-
-
-.PHONY: activate
-activate: 
-	@$(SHELL) -i -c 'micromamba activate $(NAME)'
 
 
 .PHONY: package
@@ -68,12 +64,15 @@ package:
 .PHONY: install-p10k
 install-p10k:
 	brew install romkatv/powerlevel10k/powerlevel10k
-	@echo "\nsource $$(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
-
+	@echo -e "source $$(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
+	@echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >>~/.zshrc
+	@$(SHELL) -i -c 'cp $(MAKEFILE_DIR)/configs/p10k.zsh ~/.p10k.zsh'
+	source ~/.zshrc
 
 .PHONY: help
 help:
 	@echo  '  check-brew            - Installs the brew package manager if it is not already installed'
 	@echo  '  check-micromamba      - Installs target installs the micromamba package manager if it is not already installed`
 	@echo  '  create-env            - Creates a new micromamba environment named NAME=[fill in], defaults to esad'
-	@echo  '  install-sark          - Installs `spark` and adds env variables to ~/.zshrc'
+	@echo  '  install-spark          - Installs `spark` and required libraries'
+	@echo  '  install-p10k          - Installs the powerlevel10k theme for Iterm2'
