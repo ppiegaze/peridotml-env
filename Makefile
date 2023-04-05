@@ -62,7 +62,7 @@ package:
 
 
 .PHONY: install-p10k
-install-p10k:
+install-p10k: check-brew
 	brew install romkatv/powerlevel10k/powerlevel10k
 	@echo -e "source $$(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
 	@echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >>~/.zshrc
