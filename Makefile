@@ -11,13 +11,13 @@ check-brew:
 	fi
 
 .PHONY: check-micromamba
-check-micromamba:
+check-micromamba: check-brew
 	@$(SHELL) -i -c 'command -v micromamba > /dev/null || ( \
 		echo "Micromamba not found. Installing..."; \
 		if [ "$$(uname)" = "Darwin" ]; then \
-			curl -L https://micro.mamba.pm/install.sh | bash; \
-		else \
 			curl -L https://micro.mamba.pm/install.sh | zsh; \
+		else \
+			curl -L https://micro.mamba.pm/install.sh | bash; \
 			source ~/.zshrc; \
 		fi; \
 	)'
@@ -47,7 +47,7 @@ install-flyte:
 	brew install flyteorg/homebrew-tap/flytectl
 
 
-.PHONY: start-flyte-demo
+.PHONY: start-flyte
 start-flyte: install-flyte
 	flytectl demo start
 
@@ -69,10 +69,23 @@ install-p10k: check-brew
 	@$(SHELL) -i -c 'cp $(MAKEFILE_DIR)/configs/p10k.zsh ~/.p10k.zsh'
 	source ~/.zshrc
 
+
+.PHONY: check-union
+check-union: 
+	@if  ! which uctl >/dev/null; then \
+		curl -sL https://raw.githubusercontent.com/unionai/uctl/main/install.sh \
+		| sudo bash -s -- -b /usr/local/bin; \
+	fi;
+
+.PHONY: start-union
+start-union: check-union
+	uctl demo start
+
+
 .PHONY: help
 help:
 	@echo  '  check-brew            - Installs the brew package manager if it is not already installed'
-	@echo  '  check-micromamba      - Installs target installs the micromamba package manager if it is not already installed`
+	@echo  '  check-micromamba      - Installs target installs the micromamba package manager if it is not already installed'
 	@echo  '  create-env            - Creates a new micromamba environment named NAME=[fill in], defaults to esad'
 	@echo  '  install-spark          - Installs `spark` and required libraries'
 	@echo  '  install-p10k          - Installs the powerlevel10k theme for Iterm2'
