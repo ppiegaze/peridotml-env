@@ -81,6 +81,10 @@ check-union:
 start-union: check-union
 	uctl demo start
 
+.PHONY: ghcr-login
+ghcr-login:
+	echo $CR_PAT | docker login ghcr.io -u peridotml --password-stdin
+
 
 .PHONY: help
 help:

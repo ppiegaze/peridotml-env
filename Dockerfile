@@ -1,4 +1,4 @@
-FROM mambaorg/micromamba:1.4.1
+FROM --platform=linux/amd64 mambaorg/micromamba:1.4.1
 USER root
 ENV PYTHONPATH /root
 
