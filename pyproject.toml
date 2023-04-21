@@ -1,13 +1,9 @@
 [project]
-name = "flyte_repo"
+name = "methanestat"
 version = "0.0.1"
 dependencies = [
     "awscli",
     "flytekit",
-    "polars",
-    "pyspark",
-    "flytekitplugins-spark",
-    "flytekitplugins-polars",
 ]
 
 [project.optional-dependencies]
