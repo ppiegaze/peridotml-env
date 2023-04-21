@@ -28,6 +28,13 @@ class IMG:
 
 @task(cache=False, disable_deck=False)
 def score_image(name: str) -> IMG:
+    """Returns a score and a description of the image.
+
+    Args:
+        name (str): The name of the image to score.
+    Returns:
+        IMG: a dataclass containing the image, a description, a prediction, and a label.
+    """
     path = os.path.join(CURR_DIR, name)
     img = Image.open(path)
     flytekit.Deck("Image", ImageRenderer().to_html(img))
@@ -50,12 +57,14 @@ def score_image(name: str) -> IMG:
 
 @task(disable_deck=False)
 def display_grid(images: List[IMG]):
+    """Displays a grid of images"""
     files = [ImageRenderer().to_html(img.file) for img in images]
     flytekit.Deck("Grid", FancyGrid().to_html(files))
 
 
 @task
 def images_to_df(images: List[IMG]) -> FlyteFile:
+    """Converts a list of images to a dataframe and saves it to a parquet file"""
     df = pd.DataFrame(
         [{**asdict(img), "remote_source": img.file.remote_source} for img in images]
     )
@@ -66,11 +75,14 @@ def images_to_df(images: List[IMG]) -> FlyteFile:
 
 @task
 def get_remote_source(ff: FlyteFile) -> str:
+    """Returns the remote source of a FlyteFile"""
     return ff.remote_source
 
 
 @workflow
 def report_preprocessing(images: List[IMG]) -> str:
+    """A workflow that preprocesses images for the quality report. This
+    could be simplified from flytekit"""
     ff = images_to_df(images=images)
     source = get_remote_source(ff=ff)
     return source
@@ -88,6 +100,9 @@ quality_report = NotebookTask(
 
 @workflow
 def wf() -> Tuple[PythonNotebook, HTMLPage]:
+    """A demo workflow that "scores images" and displays them 
+    in Flyte Decks and in a Jupyter Notebooks.
+    """
     images = [
         score_image(name="img1.png"),
         score_image(name="img2.png"),

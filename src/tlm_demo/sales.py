@@ -14,7 +14,6 @@ from .helpers import (
     EARLIEST_DATE,
     FEATURES,
     bar_plot_altair_html,
-    bar_plot_html,
     load_items_df,
 )
 
@@ -25,6 +24,14 @@ from .helpers import (
     disable_deck=False,
 )
 def etl_sales_aggregatation(start_dt: datetime) -> pd.DataFrame:
+    """Generates fake sales data and aggregates it by year, month, id, 
+    name and calculates sum of sales. Mimics an ETL job.
+
+    Args:
+        start_dt (datetime): Start date for generating fake sales data
+    Returns:
+        pd.DataFrame: Aggregated sales data
+    """
     items_df = load_items_df()
 
     df = pd.DataFrame()
@@ -32,7 +39,6 @@ def etl_sales_aggregatation(start_dt: datetime) -> pd.DataFrame:
     end_date = datetime.now().astimezone(pytz.utc)
     memory = np.zeros([1_000_000, 10], dtype=np.float32)
     # iterate days from max(earliest_date, start_dt) to present day
-
     i = 0
     while current_date <= end_date:
         n_sales = 1000 + int(abs(np.random.normal(loc=0, scale=2000, size=1))[0])
@@ -76,6 +82,13 @@ def etl_sales_aggregatation(start_dt: datetime) -> pd.DataFrame:
 
 @task(requests=Resources(cpu="2", mem="4Gi"), limits=Resources(cpu="2", mem="4Gi"))
 def etl_prep_features(df: pd.DataFrame) -> pd.DataFrame:
+    """Creates a simulated training dataset. Mimics a preprocessing step
+    
+    Args:
+        df (pd.DataFrame): Sales data
+    Returns:
+        pd.DataFrame: Training data
+    """
     X, y, coef = make_regression(
         n_samples=1_000_000, n_features=100, n_informative=20, coef=True
     )
@@ -101,6 +114,14 @@ def etl_prep_features(df: pd.DataFrame) -> pd.DataFrame:
 def model_training_xgboost(
     df: pd.DataFrame, n_estimators: int, n_jobs: int, max_depth: int
 ):
+    """Trains a XGBoost model and displays feature importance.
+
+    Args:
+        df (pd.DataFrame): Training data
+        n_estimators (int): Number of trees
+        n_jobs (int): Number of jobs
+        max_depth (int): Max depth of trees
+    """
     model = XGBRegressor(
         n_estimators=n_estimators, n_jobs=n_jobs, verbosity=1, max_depth=max_depth
     )
@@ -121,6 +142,14 @@ def model_training_xgboost(
 
 @workflow
 def forecasting_wf(start_dt: datetime):
+    """A Demo sales forecasting model training workflow. It has
+    two major steps: ETL and model training. Note
+        - etl_sales_aggregatation is slow on memory
+        - model_training_xgboost is cpu bound until 15 cpus
+
+    Args:
+        start_dt (datetime): Start date for generating fake sales data
+    """
     sales_df = etl_sales_aggregatation(start_dt=start_dt)
     train_df = etl_prep_features(df=sales_df)
 
